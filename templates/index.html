@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="noindex,nofollow">
+    <title>Power Enough Store Launching SOON...</title>
+    <meta name="description" content="">
+    <link rel="icon" href="{% static 'assets/images/favicon.jpg' %}" sizes="32x32" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,500,600,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+</head>
+
+<body>
+    <div class="preloader" id="preloader">
+        <div id="loader"></div>
+    </div>
+    <div class="content-wrap">
+        <div class="logo-box">
+            <img src="{% static 'assets/images/logo1.png' %}">
+        </div>
+        <div class="cta-box">
+         <h1>We are Launching<span class="highlight" style="color: #03e925;"> Soon..!</span></h1>
+          
+        </div>
+        <form action="" class="newsletter" name="newsletter" method="post" id="subscription-form">
+            {% csrf_token %}
+            <input type="email" class="form-field" name="email" id="email-input" placeholder="Your Email">
+            <button type="button" class="btn-main" id="notify-btn">Notify me!</button>
+        </form>
+        <div class="social-icons">
+         <a href="https://www.instagram.com/powerenough_store?igsh=MWx5ajA3cWk2Y2F1eg==" target>
+            <i class="fa-brands fa-instagram fa-2xl"></i>
+         </a>
+         <a href="https://wa.me/message/Y6FY5FY3TBXIJ1" target>
+            <i class="fa-brands fa-whatsapp fa-2xl"></i>
+                 </a>
+         <a href="https://youtube.com/@powerenoughperformance2956?si=Kfa457Ln27d3fc6k" target >
+            <i class="fa-brands fa-youtube fa-2xl"></i>
+                 </a>
+     </div>
+     
+        <div class="countdown">
+            <p class="timer-cta">We will launch our website in </p>
+            <ul class="timer">
+                <li>
+                    <div class="time-box"><span class="time" id="days"></span> <span class="time-txt">Days</span></div>
+                </li>
+                <li>
+                    <div class="time-box"><span class="time" id="hours"></span> <span class="time-txt">Hours</span></div>
+                </li>
+                <li>
+                    <div class="time-box"><span class="time" id="minutes"></span> <span class="time-txt">Minutes</span></div>
+                </li>
+                <li>
+                    <div class="time-box"><span class="time" id="seconds"></span> <span class="time-txt">Seconds</span></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- Add this inside the <head> section of your HTML file -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script src="{% static 'assets/js/main.js' %}"></script>
+    <script>
+        // Add your custom script here
+        countdown('02/15/2024 12:00:00 PM');
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#notify-btn').click(function() {
+                var email = $('#email-input').val();
+                
+                // Use Django URL tag to generate the URL
+                var url = '{% url "coming_soon" %}';
+    
+                // Display SweetAlert loading screen
+                Swal.fire({
+                    title: 'Sending...',
+                    allowOutsideClick: false,
+                    onBeforeOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+    
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: {
+                        'email': email,
+                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function(response) {
+                        // Close the loading screen
+                        Swal.close();
+    
+                        // Check the response message
+                        if (response.message === 'Email is already subscribed!') {
+                            // Show a different SweetAlert for the case where the email is already subscribed
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Already Subscribed',
+                                text: 'You are already subscribed for notifications.',
+                            });
+                        } else {
+                            // Show success message for new subscriptions
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: 'Email subscription successful!',
+                            });
+                        }
+                    },
+                    error: function(error) {
+                        // Close the loading screen and show error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'Error subscribing to the newsletter.',
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+    
+    
+    
+</body>
+
+</html>
